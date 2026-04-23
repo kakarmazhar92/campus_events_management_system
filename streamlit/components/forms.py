@@ -1,6 +1,3 @@
-# components/forms.py
-# Dynamic field builder and form renderers
-
 import streamlit as st
 from utils.queries import (
     add_event_field, delete_event_field,

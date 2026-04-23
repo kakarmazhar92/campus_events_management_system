@@ -10,7 +10,12 @@ from components.navbar  import render_navbar
 from components.cards   import page_header, section_title
 
 # ── CONFIG ─────────────────────────────────────────
-st.set_page_config(page_title="Create Event", layout="wide")
+st.set_page_config(
+    page_title="CampusEvents Admin",
+    page_icon="🎓",
+    layout="wide",
+    initial_sidebar_state="collapsed",
+)
 
 with open("assets/styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -38,11 +43,7 @@ with col1:
     st.markdown("### Event Fields")
 
     ef_name = st.text_input("Field Name", key="ef_name")
-    ef_type = st.selectbox("Type", ["text", "number", "date", "dropdown"], key="ef_type")
-
-    ef_options = None
-    if ef_type == "dropdown":
-        ef_options = st.text_input("Dropdown Options (comma separated)", key="ef_options")
+    ef_type = st.selectbox("Type", ["text"], key="ef_type")
 
     if st.button("➕ Add Event Field"):
         if ef_name.strip():
@@ -67,21 +68,43 @@ with col2:
     rf_name = st.text_input("Field Name", key="rf_name")
     rf_type = st.selectbox("Type", ["text", "number", "date", "dropdown"], key="rf_type")
 
+    # ✅ ADD THIS (missing part)
+    rf_options = None
+    if rf_type == "dropdown":
+        rf_options = st.text_input(
+            "Dropdown Options (comma separated)",
+            key="rf_options",placeholder="CS, IT, ENTC"
+        )
+
     if st.button("➕ Add Registration Field"):
         if rf_name.strip():
-            st.session_state.ce_rf_reg_fields.append({
-                "field_name": rf_name.strip(),
-                "field_type": rf_type,
-                "is_required": 1
-            })
-            st.rerun()
 
+            # ✅ Validate dropdown options
+            if rf_type == "dropdown" and not rf_options:
+                st.error("Please enter dropdown options")
+            else:
+                st.session_state.ce_rf_reg_fields.append({
+                    "field_name": rf_name.strip(),
+                    "field_type": rf_type,
+                    "is_required": 1,
+                    "options": rf_options if rf_type == "dropdown" else None
+                })
+                st.rerun()
+
+    # Show fields
     for i, f in enumerate(st.session_state.ce_rf_reg_fields):
         c1, c2 = st.columns([4,1])
-        c1.write(f"• {f['field_name']} ({f['field_type']})")
+
+        display = f"{f['field_name']} ({f['field_type']})"
+        if f.get("options"):
+            display += f" → [{f['options']}]"
+
+        c1.write(f"• {display}")
+
         if c2.button("❌", key=f"del_rf_{i}"):
             st.session_state.ce_rf_reg_fields.pop(i)
             st.rerun()
+
 
 st.divider()
 

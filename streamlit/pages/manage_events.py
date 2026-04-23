@@ -19,10 +19,10 @@ from components.forms   import render_event_field_builder, render_registration_f
 
 # ── PAGE CONFIG ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Manage Events — CampusEvents",
-    page_icon="📅",
+    page_title="CampusEvents Admin",
+    page_icon="🎓",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 with open("assets/styles.css") as f:
