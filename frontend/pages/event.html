@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Event — CampusEvents</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script>window.API_BASE = 'http://localhost:8000';</script>
+</head>
+<body>
+<script src="../js/api.js"></script>
+<script src="../js/navbar.js"></script>
+
+<main class="page-wrapper" style="max-width:900px;">
+  <div id="loading" style="display:flex;justify-content:center;padding:4rem;">
+    <div class="spinner spinner-lg"></div>
+  </div>
+  <div id="content" style="display:none;"></div>
+  <div id="error" style="display:none;">
+    <div class="empty"><span class="empty-icon">⚠️</span>Event not found.</div>
+  </div>
+</main>
+
+<!-- REGISTER MODAL -------------------------------------------------------->
+<div class="modal-overlay" id="reg-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-title">Register</div>
+        <div style="font-size:.8rem;color:var(--text2);margin-top:.2rem;" id="modal-subtitle"></div>
+      </div>
+      <button class="modal-close" id="modal-close">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
+      <button class="btn btn-primary" id="modal-submit">Confirm Registration →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const params  = new URLSearchParams(window.location.search);
+const eventId = parseInt(params.get('id'));
+let currentEvent = null;
+
+// ── LOAD EVENT ─────────────────────────────────────────────────────────────
+async function loadEvent() {
+  if (!eventId) { showError(); return; }
+  try {
+    const e = await API.getEvent(eventId);
+    currentEvent = e;
+    document.title = `${e.title} — CampusEvents`;
+    renderEvent(e);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+  } catch {
+    showError();
+  }
+}
+function showError() {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('error').style.display   = 'block';
+}
+
+// ── RENDER ─────────────────────────────────────────────────────────────────
+function renderEvent(e) {
+  const fillPct  = Math.round((e.reg_count / e.capacity) * 100);
+  const barColor = fillPct >= 90 ? 'var(--error)' : fillPct >= 70 ? '#f97316' : 'var(--accent)';
+  const canReg   = !e.is_past && !e.is_full && !e.is_registered && !e.deadline_passed;
+  const badge    = e.is_registered ? '<span class="badge badge-registered" style="font-size:.8rem;">✓ Registered</span>'
+                 : e.is_full       ? '<span class="badge badge-full"       style="font-size:.8rem;">Event Full</span>'
+                 : e.is_past       ? '<span class="badge badge-past"       style="font-size:.8rem;">Past</span>'
+                 :                   '<span class="badge badge-upcoming"   style="font-size:.8rem;">Upcoming</span>';
+
+  const heroHtml = e.image_url
+    ? `<div class="event-hero"><img src="${e.image_url}" alt="${e.title}" onerror="this.parentElement.innerHTML='<div class=\\'event-hero-placeholder\\'>🎓</div>'">
+       <div class="event-hero-overlay"></div></div>`
+    : `<div class="event-hero"><div class="event-hero-placeholder">🎓</div></div>`;
+
+  const extraFields = e.event_fields?.length ? `
+    <div class="section-label" style="margin-top:2rem;">Event Details</div>
+    <div class="event-fields-list">
+      ${e.event_fields.map(f => `
+        <div class="event-field-row">
+          <span class="event-field-label">${f.field_name}</span>
+          <span class="event-field-value">${f.field_value || '—'}</span>
+        </div>`).join('')}
+    </div>` : '';
+
+  const regFormPreview = e.registration_fields?.length ? `
+    <div class="section-label" style="margin-top:2rem;">Registration Form Includes</div>
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem;">
+      ${e.registration_fields.map(f => `
+        <span style="font-size:.75rem;background:var(--bg3);border:1px solid var(--border);
+              border-radius:20px;padding:.2rem .75rem;color:var(--text2);">
+          ${f.is_required ? '<span style="color:var(--accent)">*</span> ' : ''}${f.field_name}
+          <span style="color:var(--text3)">(${f.field_type})</span>
+        </span>`).join('')}
+    </div>` : '';
+
+  document.getElementById('content').innerHTML = `
+    ${heroHtml}
+
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;">
+      <div>
+        <a href="../index.html" style="font-size:.8rem;color:var(--text2);display:flex;align-items:center;gap:.3rem;margin-bottom:.75rem;">
+          ← Back to Events
+        </a>
+        <h1 style="font-size:1.75rem;font-weight:800;letter-spacing:-.03em;">${e.title}</h1>
+      </div>
+      ${badge}
+    </div>
+
+    <div class="event-meta-grid">
+      <div class="event-meta-card">
+        <div class="event-meta-label">📅 Event Date</div>
+        <div class="event-meta-value">${formatDate(e.event_date)}</div>
+      </div>
+      ${e.deadline ? `
+      <div class="event-meta-card">
+        <div class="event-meta-label">⏰ Registration Deadline</div>
+        <div class="event-meta-value" style="color:${e.deadline_passed?'var(--error)':'var(--accent)'}">
+          ${formatDate(e.deadline)}
+        </div>
+      </div>` : ''}
+      <div class="event-meta-card">
+        <div class="event-meta-label">👥 Registered</div>
+        <div class="event-meta-value">${e.reg_count} / ${e.capacity}</div>
+      </div>
+      <div class="event-meta-card">
+        <div class="event-meta-label">🎟️ Spots Left</div>
+        <div class="event-meta-value" style="color:${e.spots_left===0?'var(--error)':'var(--accent)'}">
+          ${e.spots_left === 0 ? 'None' : e.spots_left}
+        </div>
+      </div>
+    </div>
+
+    <div class="cap-bar" style="height:5px;margin-bottom:.5rem;">
+      <div class="cap-bar-fill" style="width:${fillPct}%;background:${barColor}"></div>
+    </div>
+
+    ${e.description ? `
+    <div style="margin:1.5rem 0;">
+      <div class="section-label">About This Event</div>
+      <p style="color:var(--text2);line-height:1.8;font-size:.93rem;">${e.description}</p>
+    </div>` : ''}
+
+    ${extraFields}
+    ${regFormPreview}
+
+    <div style="margin-top:2.5rem;">
+      ${canReg ? `
+        <button class="btn btn-primary btn-lg" id="open-reg-btn">
+          Register for This Event →
+        </button>` :
+      e.is_registered ? `
+        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+          <div style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);
+               border-radius:var(--radius-sm);padding:.75rem 1.25rem;font-size:.9rem;color:var(--success);">
+            ✓ You are registered for this event
+          </div>
+          <a href="profile.html" class="btn btn-ghost">View My Registrations</a>
+        </div>` :
+      e.is_full ? `
+        <div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);
+             border-radius:var(--radius-sm);padding:.75rem 1.25rem;font-size:.9rem;color:var(--error);">
+          ⛔ Event is at full capacity
+        </div>` :
+        `<div style="color:var(--text3);font-size:.9rem;">Registration is closed for this event.</div>`
+      }
+    </div>`;
+
+  // Bind open button
+  const openBtn = document.getElementById('open-reg-btn');
+  if (openBtn) openBtn.addEventListener('click', openModal);
+}
+
+// ── MODAL ──────────────────────────────────────────────────────────────────
+function openModal() {
+  if (!API.isLoggedIn()) {
+    toast('Please sign in to register', 'info');
+    setTimeout(() => window.location.href = `login.html?next=event.html?id=${eventId}`, 1000);
+    return;
+  }
+  document.getElementById('modal-title').textContent    = currentEvent.title;
+  document.getElementById('modal-subtitle').textContent = `📅 ${formatDate(currentEvent.event_date)}`;
+  const user = API.getUser();
+  document.getElementById('modal-body').innerHTML = buildForm(currentEvent, user);
+  document.getElementById('reg-modal').classList.add('open');
+}
+
+function buildForm(e, user) {
+  let html = `
+    <div class="form-group">
+      <label class="form-label">Full Name <span style="color:var(--error)">*</span></label>
+      <input type="text" class="form-control" id="reg-name" value="${user?.name || ''}" required>
+    </div>
+    <div class="form-group">
+      <label class="form-label">PRN / Roll No. <span style="color:var(--error)">*</span></label>
+      <input type="text" class="form-control" id="reg-prn" placeholder="e.g. 22210234" required>
+    </div>`;
+
+  for (const f of e.registration_fields || []) {
+    const req = f.is_required;
+    const id  = `rf-${f.id}`;
+    let input = '';
+    if (f.field_type === 'dropdown' && f.options?.length) {
+      input = `<select class="form-control" id="${id}" data-fid="${f.id}" ${req?'required':''}>
+        <option value="">Select…</option>
+        ${f.options.map(o=>`<option value="${o}">${o}</option>`).join('')}
+      </select>`;
+    } else if (f.field_type === 'number') {
+      input = `<input type="number" class="form-control" id="${id}" data-fid="${f.id}" ${req?'required':''}>`;
+    } else if (f.field_type === 'date') {
+      input = `<input type="date" class="form-control" id="${id}" data-fid="${f.id}" ${req?'required':''}>`;
+    } else {
+      input = `<input type="text" class="form-control" id="${id}" data-fid="${f.id}" placeholder="${f.field_name}" ${req?'required':''}>`;
+    }
+    html += `<div class="form-group">
+      <label class="form-label">${f.field_name}${req?' <span style="color:var(--error)">*</span>':''}</label>
+      ${input}
+    </div>`;
+  }
+  return html;
+}
+
+async function submitReg() {
+  const name = document.getElementById('reg-name')?.value.trim();
+  const prn  = document.getElementById('reg-prn')?.value.trim();
+  if (!name || !prn) { toast('Name and PRN are required', 'error'); return; }
+
+  const answers = {};
+  document.querySelectorAll('[data-fid]').forEach(el => {
+    if (el.value.trim()) answers[parseInt(el.dataset.fid)] = el.value.trim();
+  });
+
+  for (const f of currentEvent.registration_fields || []) {
+    if (f.is_required && !answers[f.id]) {
+      toast(`"${f.field_name}" is required`, 'error'); return;
+    }
+  }
+
+  const btn = document.getElementById('modal-submit');
+  btn.disabled = true; btn.textContent = 'Registering…';
+  try {
+    await API.registerEvent(currentEvent.id, { name, prn, answers });
+    document.getElementById('reg-modal').classList.remove('open');
+    toast('Registered successfully! 🎉', 'success');
+    await loadEvent();
+  } catch (err) {
+    toast(err.message || 'Registration failed', 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Confirm Registration →';
+  }
+}
+
+// ── BIND ───────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadEvent();
+  const overlay = document.getElementById('reg-modal');
+  document.getElementById('modal-close').addEventListener('click',  () => overlay.classList.remove('open'));
+  document.getElementById('modal-cancel').addEventListener('click', () => overlay.classList.remove('open'));
+  document.getElementById('modal-submit').addEventListener('click', submitReg);
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+</script>
+</body>
+</html>

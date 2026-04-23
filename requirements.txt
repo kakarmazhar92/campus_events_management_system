@@ -1,0 +1,9 @@
+streamlit>=1.35.0
+mysql-connector-python>=8.3.0
+pandas>=2.1.0
+plotly>=5.18.0
+python-dotenv>=1.0.0
+fastapi 
+sqlalchemy 
+python-jose[cryptography]
+pydantic[email]
