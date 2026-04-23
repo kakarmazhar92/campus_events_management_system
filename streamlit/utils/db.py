@@ -10,6 +10,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ── CONFIG ──────────────────────────────────────────────────────────────────
+# DB_CONFIG = {
+#     "host":     os.getenv("DB_HOST",     "localhost"),
+#     "port":     int(os.getenv("DB_PORT", "3306")),
+#     "user":     os.getenv("DB_USER",     "root"),
+#     "password": os.getenv("DB_PASSWORD", ""),
+#     "database": os.getenv("DB_NAME",     "campus_events"),
+#     "charset":  "utf8mb4",
+#     "autocommit": False,
+#     "connection_timeout": 10,
+#     "use_pure": True,
+# }
+
 DB_CONFIG = {
     "host": st.secrets["DB_HOST"],
     "port": int(st.secrets["DB_PORT"]),
