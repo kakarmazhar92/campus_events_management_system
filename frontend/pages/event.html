@@ -6,6 +6,7 @@
   <title>Event — CampusEvents</title>
   <link rel="stylesheet" href="../css/style.css">
   <script>window.API_BASE = 'http://localhost:8000';</script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 <script src="../js/api.js"></script>
@@ -143,7 +144,7 @@ function renderEvent(e) {
     ${e.description ? `
     <div style="margin:1.5rem 0;">
       <div class="section-label">About This Event</div>
-      <p style="color:var(--text2);line-height:1.8;font-size:.93rem;">${e.description}</p>
+      <div class="event-desc">${marked.parse(e.description || "")}</div>
     </div>` : ''}
 
     ${extraFields}

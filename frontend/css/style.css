@@ -203,6 +203,25 @@ select.form-control { cursor:pointer; }
   margin-bottom:1rem;
 }
 
+.event-desc {
+  color: var(--text2);
+  line-height: 1.8;
+  font-size: 0.93rem;
+}
+
+.event-desc ul {
+  padding-left: 20px;
+  margin-top: 8px;
+}
+
+.event-desc li {
+  margin-bottom: 6px;
+}
+
+.event-desc p {
+  margin-bottom: 10px;
+}
+
 /* ══ BADGES ═══════════════════════════════════════ */
 .badge {
   display:inline-flex; align-items:center; gap:.3rem;
