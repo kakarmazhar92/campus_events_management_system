@@ -10,8 +10,10 @@ from backend import models, auth
 from backend.database import engine, get_db, Base
 
 
-# ── INIT ─────────────────────────────────────────────────────────────────────
-Base.metadata.create_all(bind=engine)  # creates users table; others already exist from Streamlit
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print("DB INIT ERROR:", e)
 
 app = FastAPI(title="CampusEvents API", version="1.0.0")
 
