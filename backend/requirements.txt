@@ -1,5 +1,6 @@
 fastapi
 uvicorn
+sqlalchemy
 mysql-connector-python
 python-dotenv
-sqlalchemy
+python-jose[cryptography]
