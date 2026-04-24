@@ -14,10 +14,11 @@ st.set_page_config(
     page_title="CampusEvents Admin",
     page_icon="🎓",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
-with open("assets/styles.css") as f:
+CSS_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "styles.css")
+with open(CSS_PATH) as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 require_auth()
