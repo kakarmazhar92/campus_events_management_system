@@ -7,11 +7,22 @@ from urllib.parse import quote_plus
 
 load_dotenv()
 
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "3306")
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASS = os.getenv("DB_PASSWORD", "")
-DB_NAME = os.getenv("DB_NAME", "campus_events")
+# DB_HOST = os.getenv("DB_HOST", "localhost")
+# DB_PORT = os.getenv("DB_PORT", "3306")
+# DB_USER = os.getenv("DB_USER", "root")
+# DB_PASS = os.getenv("DB_PASSWORD", "")
+# DB_NAME = os.getenv("DB_NAME", "campus_events")
+
+import os
+
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = int(os.getenv("DB_PORT"))  
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASSWORD")
+DB_NAME = os.getenv("DB_NAME")
+
+print("DB_HOST:", DB_HOST)
+print("DB_PORT:", DB_PORT)
 
 password = quote_plus(os.getenv("DB_PASSWORD"))
 
