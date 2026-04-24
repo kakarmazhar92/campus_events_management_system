@@ -4,4 +4,4 @@ sqlalchemy
 mysql-connector-python
 python-dotenv
 python-jose[cryptography]
-email-validator   ✅ add this
+email-validator 
