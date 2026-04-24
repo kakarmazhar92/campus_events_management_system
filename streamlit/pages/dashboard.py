@@ -13,12 +13,13 @@ from utils.auth    import require_auth
 from utils.queries import (
     get_analytics_overview, get_registrations_per_event,
     get_registration_trend, get_recent_registrations,
-    get_all_events, get_registrations,
+    get_registrations,
 )
 from components.sidebar import render_sidebar
 from components.navbar  import render_navbar
 from components.cards   import kpi_card, page_header, section_title, empty_state
 from components.forms   import csv_download_button
+from utils.queries import get_registrations_with_answers
 
 # ── PAGE CONFIG ───────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -96,25 +97,30 @@ PLOTLY_LAYOUT = dict(
 # ── HEADER ────────────────────────────────────────────────────────────────────
 page_header("Analytics", "Dashboard", f"Last updated: {date.today().strftime('%B %d, %Y')}")
 
-# ── FILTERS ──────────────────────────────────────────────────────────────────
-with st.expander("🔍 Filters", expanded=False):
-    fc1, fc2, fc3 = st.columns(3)
-    all_events = get_all_events()
-    event_options = {e["title"]: e["id"] for e in all_events}
+# # ── FILTERS ──────────────────────────────────────────────────────────────────
+# with st.expander("🔍 Filters", expanded=False):
+#     fc1, fc2, fc3 = st.columns(3)
+#     all_events = get_all_events()
+#     event_options = {e["title"]: e["id"] for e in all_events}
 
-    with fc1:
-        selected_event_name = st.selectbox(
-            "Filter by Event", ["All Events"] + list(event_options.keys()),
-            key="dash_event_filter"
-        )
-    with fc2:
-        trend_days = st.selectbox("Trend Period", [7, 14, 30, 60, 90], index=2,
-                                  key="dash_trend_days")
-    with fc3:
-        recent_limit = st.selectbox("Recent Registrations", [5, 10, 20, 50], index=1,
-                                    key="dash_recent_limit")
+#     with fc1:
+#         selected_event_name = st.selectbox(
+#             "Filter by Event", ["All Events"] + list(event_options.keys()),
+#             key="dash_event_filter"
+#         )
+#     with fc2:
+#         trend_days = st.selectbox("Trend Period", [7, 14, 30, 60, 90], index=2,
+#                                   key="dash_trend_days")
+#     with fc3:
+#         recent_limit = st.selectbox("Recent Registrations", [5, 10, 20, 50], index=1,
+#                                     key="dash_recent_limit")
 
-selected_event_id = event_options.get(selected_event_name) if selected_event_name != "All Events" else None
+# selected_event_id = event_options.get(selected_event_name) if selected_event_name != "All Events" else None
+
+# ── DEFAULT CONFIG (NO FILTERS) ───────────────────────────────────────────────
+trend_days = 30
+recent_limit = 10
+selected_event_id = None
 
 # ── KPI ROW ───────────────────────────────────────────────────────────────────
 with st.spinner("Loading analytics…"):
@@ -213,30 +219,39 @@ section_title("Recent Registrations")
 c_table, c_export = st.columns([4, 1])
 
 with c_table:
-    df_recent = get_recent_registrations(recent_limit)
+    df_recent = get_registrations_with_answers(None)
+
     if not df_recent.empty:
+        df_recent["created_at"] = pd.to_datetime(df_recent["created_at"])
+        df_recent = df_recent.sort_values("created_at", ascending=False).head(recent_limit)
+
+        # ✅ Correct column config (NO comma at end)
+        column_config = {
+            "name": st.column_config.TextColumn("Student Name"),
+            "prn": st.column_config.TextColumn("PRN"),
+            "event_title": st.column_config.TextColumn("Event"),
+            "created_at": st.column_config.DatetimeColumn("Registered At"),
+        }
+
+        # 🔥 THIS WAS MISSING
         st.dataframe(
             df_recent,
             use_container_width=True,
             hide_index=True,
-            column_config={
-                "name":          st.column_config.TextColumn("Student Name"),
-                "prn":           st.column_config.TextColumn("PRN"),
-                "event":         st.column_config.TextColumn("Event"),
-                "registered_at": st.column_config.DatetimeColumn("Registered At",
-                                    format="MMM DD, YYYY HH:mm"),
-            },
+            column_config=column_config,
         )
+
     else:
         empty_state("👥", "No registrations yet.")
 
 with c_export:
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Export")
-    df_export = get_recent_registrations(1000)
-    if selected_event_id:
-        rows = get_registrations(selected_event_id)
-        df_export = pd.DataFrame(rows) if rows else pd.DataFrame()
+    df_export = get_registrations_with_answers(None)
+
+    if not df_export.empty:
+        df_export["created_at"] = pd.to_datetime(df_export["created_at"])
+        df_export = df_export.sort_values("created_at", ascending=False)
     csv_download_button(
         df_export,
         filename=f"registrations_{date.today()}.csv",

@@ -94,6 +94,84 @@ def delete_event_field(field_id: int):
 #  REGISTRATION FIELDS (form fields)
 # ══════════════════════════════════════════════════════════
 
+def get_registrations_with_answers(event_id=None):
+    rows = execute_query(
+        """
+        SELECT 
+            r.id, r.name, r.prn, r.created_at,
+            e.title AS event_title,
+            rf.field_name,
+            ra.value
+        FROM registrations r
+        JOIN events e ON e.id = r.event_id
+        LEFT JOIN registration_answers ra ON r.id = ra.registration_id
+        LEFT JOIN registration_fields rf ON rf.id = ra.field_id
+        WHERE (%s IS NULL OR r.event_id = %s)
+        ORDER BY r.created_at DESC
+        """,
+        (event_id, event_id),
+        fetch="all"
+    ) or []
+
+    if not rows:
+        return pd.DataFrame()
+
+    df = pd.DataFrame(rows)
+
+    # 🔥 Separate base data (ALL students)
+    base_df = df[["id", "name", "prn", "created_at", "event_title"]].drop_duplicates()
+
+    # 🔥 Pivot only answers
+    pivot_df = df.pivot_table(
+        index="id",
+        columns="field_name",
+        values="value",
+        aggfunc="first"
+    )
+
+    pivot_df = pivot_df.reset_index()
+
+    # 🔥 Merge back → THIS FIXES YOUR BUG
+    final_df = pd.merge(base_df, pivot_df, on="id", how="left")
+
+    return final_df
+    rows = execute_query(
+        """
+        SELECT 
+            r.id, r.name, r.prn, r.created_at,
+            e.title AS event_title,
+            rf.field_name,
+            ra.value
+        FROM registrations r
+        JOIN events e ON e.id = r.event_id
+        LEFT JOIN registration_answers ra ON r.id = ra.registration_id
+        LEFT JOIN registration_fields rf ON rf.id = ra.field_id
+        WHERE (%s IS NULL OR r.event_id = %s)
+        ORDER BY r.created_at DESC
+        """,
+        (event_id, event_id),
+        fetch="all"
+    ) or []
+
+    if not rows:
+        return pd.DataFrame()
+
+    df = pd.DataFrame(rows)
+
+    # 🔥 Pivot dynamic fields into columns
+    pivot_df = df.pivot_table(
+        index=["id", "name", "prn", "created_at", "event_title"],
+        columns="field_name",
+        values="value",
+        aggfunc="first"
+    ).reset_index()
+
+    # Flatten column names
+    pivot_df.columns.name = None
+
+    return pivot_df
+
+
 def get_registration_fields(event_id: int) -> list[dict]:
     return execute_query(
         "SELECT * FROM registration_fields WHERE event_id = %s ORDER BY id",
@@ -128,26 +206,25 @@ def get_registrations(event_id: int | None = None) -> list[dict]:
     if event_id:
         return execute_query(
             """
-            SELECT r.id, r.name, r.prn, f.field_name, a.value, r.created_at,
-                   e.title AS event_title, e.event_date
-            FROM   registrations r
-            INNER JOIN   events e ON e.id = r.event_id
-            INNER JOIN registration_answers a
-            ON r.id = a.registration_id
-            INNER JOIN registration_fields f
-            ON a.field_id = f.id
-            WHERE  r.event_id = %s
-            ORDER  BY r.created_at DESC
+            SELECT 
+                r.id, r.name, r.prn, r.created_at,
+                e.title AS event_title, e.event_date
+            FROM registrations r
+            JOIN events e ON e.id = r.event_id
+            WHERE r.event_id = %s
+            ORDER BY r.created_at DESC
             """,
             (event_id,), fetch="all"
         ) or []
+
     return execute_query(
         """
-        SELECT r.id, r.name, r.prn, r.created_at,
-               e.title AS event_title, e.event_date
-        FROM   registrations r
-        JOIN   events e ON e.id = r.event_id
-        ORDER  BY r.created_at DESC
+        SELECT 
+            r.id, r.name, r.prn, r.created_at,
+            e.title AS event_title, e.event_date
+        FROM registrations r
+        JOIN events e ON e.id = r.event_id
+        ORDER BY r.created_at DESC
         """,
         fetch="all"
     ) or []

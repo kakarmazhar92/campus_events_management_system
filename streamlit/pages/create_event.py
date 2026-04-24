@@ -9,6 +9,15 @@ from components.sidebar import render_sidebar
 from components.navbar  import render_navbar
 from components.cards   import page_header, section_title
 
+import cloudinary
+import cloudinary.uploader
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUD_NAME"),
+    api_key=os.getenv("API_KEY"),
+    api_secret=os.getenv("API_SECRET")
+)
+
 # ── CONFIG ─────────────────────────────────────────
 st.set_page_config(
     page_title="Registrations — CampusEvents",
@@ -177,8 +186,36 @@ with st.form("create_event_form"):
     with c4:
         deadline = st.date_input("Deadline", value=date.today() + timedelta(days=5))
     with c5:
-        image_url = st.text_input("Image URL")
+    # ✅ ALWAYS initialize
+        if "uploaded_image_url" not in st.session_state:
+            st.session_state.uploaded_image_url = ""
 
+    # ✅ ALWAYS define uploader (outside if)
+    uploaded_file = st.file_uploader(
+        "Upload Event Image",
+        type=["jpg", "jpeg", "png"]
+    )
+
+    # ✅ Upload only once
+    if uploaded_file and not st.session_state.uploaded_image_url:
+        with st.spinner("Uploading image..."):
+            result = cloudinary.uploader.upload(uploaded_file)
+            st.session_state.uploaded_image_url = result["secure_url"]
+
+        st.success("Image uploaded ✅")
+
+    # ✅ Preview
+    if st.session_state.uploaded_image_url:
+        st.image(
+            st.session_state.uploaded_image_url,
+            caption="Preview",
+            use_container_width=True
+        )
+
+    # ✅ FINAL URL (with fallback)
+    image_url = st.session_state.uploaded_image_url or \
+        "https://via.placeholder.com/400x200?text=Event"
+        
     st.markdown("### 🧾 Selected Fields")
 
     colA, colB = st.columns(2)
@@ -193,6 +230,7 @@ with st.form("create_event_form"):
         for f in st.session_state.ce_rf_reg_fields:
             st.write(f"• {f['field_name']}")
 
+    st.session_state.uploaded_image_url = ""
     submit = st.form_submit_button("🚀 Create Event")
 
 # ── SUBMIT LOGIC ───────────────────────────────────

@@ -107,21 +107,23 @@ selected_event_id = event_map.get(selected_event) if selected_event != "All Even
 
 # ── LOAD REGISTRATIONS ────────────────────────────────────────────────────────
 with st.spinner("Loading registrations…"):
-    rows = get_registrations(selected_event_id)
-
-df = pd.DataFrame(rows) if rows else pd.DataFrame()
+    from utils.queries import get_registrations_with_answers
+    df = get_registrations_with_answers(selected_event_id)
 
 # Apply client-side filters
 if not df.empty:
     if prn_search.strip():
-        df = df[df["prn"].str.contains(prn_search.strip(), case=False, na=False)]
+        df = df[df["prn"].astype(str).str.contains(prn_search.strip(), case=False, na=False)]
+
     if name_search.strip():
-        df = df[df["name"].str.contains(name_search.strip(), case=False, na=False)]
+        df = df[df["name"].astype(str).str.contains(name_search.strip(), case=False, na=False)]
+
+    df = df.reset_index(drop=True)   # ✅ important
 
 # ── STATS ROW ──────────────────────────────────────────────────────────────────
 s1, s2, s3, s4 = st.columns(4)
 with s1:
-    total_regs = len(rows) if rows else 0
+    total_regs = len(df) if not df.empty else 0
     st.markdown(f"""
     <div class="kpi-card" style="padding:1rem;">
         <div class="kpi-label">Total Registrations</div>
@@ -164,8 +166,7 @@ with t_col:
         empty_state("👥", "No registrations found for the selected filters.")
     else:
         # Display columns
-        display_cols = [c for c in ["name","prn","event_title","event_date","created_at"] if c in df.columns]
-        display_df = df[display_cols].copy()
+        display_df = df.copy()
 
         col_config = {
             "name":        st.column_config.TextColumn("Student Name", width="medium"),
@@ -233,23 +234,24 @@ with e_col:
     section_title("Export")
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Full export (selected event or all)
-    export_df = get_export_df(selected_event_id)
-    fname = f"registrations_{selected_event.replace(' ','_')}_{date.today()}.csv" \
-        if selected_event != "All Events" else f"all_registrations_{date.today()}.csv"
-    csv_download_button(export_df, filename=fname, label="⬇️ Export All")
+    full_export_df = df.copy()
+
+    csv_download_button(
+    full_export_df,
+    filename=f"{selected_event.replace(' ','_') if selected_event!='All Events' else 'all'}_{date.today()}.csv",
+    label="⬇️ Export Event Data",
+)
 
     # Filtered export
-    st.markdown("<br>", unsafe_allow_html=True)
     if not df.empty:
         filtered_csv = df.to_csv(index=False).encode("utf-8")
         st.download_button(
-            "⬇️ Export Filtered",
-            data=filtered_csv,
-            file_name=f"filtered_{date.today()}.csv",
-            mime="text/csv",
-        )
-        st.caption(f"{len(df)} rows")
+        "⬇️ Export Filtered",
+        data=filtered_csv,
+        file_name=f"filtered_{date.today()}.csv",
+        mime="text/csv",
+    )
+    st.caption(f"{len(df)} rows")
 
     st.markdown("<br>", unsafe_allow_html=True)
     section_title("Quick Stats")
