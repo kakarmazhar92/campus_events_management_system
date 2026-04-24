@@ -6,7 +6,7 @@ from sqlalchemy import text
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import date as Date
-import models, auth
+from backend import models, auth
 from database import engine, get_db, Base
 
 # ── INIT ─────────────────────────────────────────────────────────────────────
