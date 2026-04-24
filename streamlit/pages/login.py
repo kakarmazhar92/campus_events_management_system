@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 # Load CSS
-with open("assets/styles.css") as f:
+with open("streamlit/assets/styles.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Init DB on first load
