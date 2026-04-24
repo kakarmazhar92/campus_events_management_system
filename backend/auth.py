@@ -5,8 +5,8 @@ from jose import JWTError, jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
-from database import get_db
-import models
+from backend.database import get_db
+from backend import models
 
 SECRET_KEY  = os.getenv("SECRET_KEY", "campus_secret_change_in_production_2024")
 ALGORITHM   = "HS256"
