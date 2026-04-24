@@ -11,14 +11,62 @@ from components.cards   import page_header, section_title
 
 # ── CONFIG ─────────────────────────────────────────
 st.set_page_config(
-    page_title="CampusEvents Admin",
-    page_icon="🎓",
+    page_title="Registrations — CampusEvents",
+    page_icon="👥",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded",
 )
 
-with open("streamlit/assets/styles.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+css_path = os.path.join(BASE_DIR, "assets", "styles.css")
+
+custom_css = ""
+
+# load your css safely
+if os.path.exists(css_path):
+    with open(css_path) as f:
+        custom_css = f.read()
+
+# 🔥 FORCE SIDEBAR ALWAYS OPEN (HARD LOCK)
+custom_css += """
+/* 🚫 Disable collapse completely */
+[data-testid="stSidebar"][aria-expanded="false"] {
+    min-width: 260px !important;
+    max-width: 260px !important;
+    transform: translateX(0px) !important;
+}
+
+/* 🚫 Keep sidebar always visible */
+[data-testid="stSidebar"] {
+    display: block !important;
+    visibility: visible !important;
+    min-width: 260px !important;
+    max-width: 260px !important;
+}
+
+/* 🚫 Hide toggle button completely */
+button[title="Toggle sidebar"] {
+    display: none !important;
+}
+
+/* 🚫 Prevent content shifting */
+section.main {
+    margin-left: 260px !important;
+}
+
+/* 📱 Mobile fix */
+@media (max-width: 768px) {
+    [data-testid="stSidebar"] {
+        min-width: 200px !important;
+        max-width: 200px !important;
+    }
+    section.main {
+        margin-left: 200px !important;
+    }
+}
+"""
+
+st.markdown(f"<style>{custom_css}</style>", unsafe_allow_html=True)
 
 require_auth()
 render_sidebar(active_page="Create Event")
