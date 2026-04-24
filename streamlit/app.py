@@ -9,5 +9,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+
+
 # Always redirect to login first
 st.switch_page("pages/login.py")

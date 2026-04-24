@@ -28,6 +28,8 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
+st.set_page_config(initial_sidebar_state="expanded")
+
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
