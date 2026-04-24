@@ -25,8 +25,8 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-with open("assets/styles.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+from utils.ui import load_css
+load_css()
 
 require_auth()
 render_sidebar(active_page="Registrations")

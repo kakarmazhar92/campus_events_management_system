@@ -17,13 +17,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Load CSS
-def load_css():
-    css_path = os.path.join(os.path.dirname(__file__), "assets/styles.css")
-    if os.path.exists(css_path):
-        with open(css_path) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
+from utils.ui import load_css
 load_css()
 
 # Sidebar
