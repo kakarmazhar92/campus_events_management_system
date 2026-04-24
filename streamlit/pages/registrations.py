@@ -8,6 +8,7 @@ import pandas as pd
 from datetime import date
 
 from utils.auth    import require_auth
+from utils.helpers import load_css
 from utils.queries import (
     get_all_events, get_registrations, get_registration_answers,
     delete_registration, get_export_df,
@@ -25,9 +26,7 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-CSS_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "styles.css")
-with open(CSS_PATH) as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+load_css()
 
 require_auth()
 render_sidebar(active_page="Registrations")

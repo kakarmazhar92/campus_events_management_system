@@ -6,6 +6,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from datetime import date
 from utils.auth    import require_auth
+from utils.helpers import load_css
 from utils.queries import (
     get_all_events, get_event_by_id, update_event, delete_event,
     get_event_fields, get_registration_fields,
@@ -25,9 +26,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-CSS_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "styles.css")
-with open(CSS_PATH) as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+load_css()
 
 require_auth()
 render_sidebar(active_page="Manage Events")

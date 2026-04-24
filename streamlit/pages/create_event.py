@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from datetime import date, timedelta
 from utils.auth    import require_auth
+from utils.helpers import load_css
 from utils.queries import create_event, add_event_field, add_registration_field
 from components.sidebar import render_sidebar
 from components.navbar  import render_navbar
@@ -17,9 +18,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-CSS_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "assets", "styles.css")
-with open(CSS_PATH) as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+load_css()
 
 require_auth()
 render_sidebar(active_page="Create Event")
