@@ -28,8 +28,17 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-with open("assets/styles.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+import os
+import streamlit as st
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+css_path = os.path.join(BASE_DIR, "assets", "styles.css")
+
+if os.path.exists(css_path):
+    with open(css_path) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+else:
+    st.warning("CSS file not found")
 
 require_auth()
 render_sidebar(active_page="Dashboard")
