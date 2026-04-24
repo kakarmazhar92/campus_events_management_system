@@ -1,7 +1,7 @@
 // js/api.js — central API client + auth helpers
 
 const API = (() => {
-  const BASE = window.API_BASE || 'http://localhost:8000';
+  const BASE = window.API_BASE || 'https://campus-events-management-system.onrender.com';
 
   // ── TOKEN ────────────────────────────────────────────────────────────────
   const getToken  = ()    => localStorage.getItem('ce_token');
