@@ -5,7 +5,6 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from utils.auth  import login, seed_default_admin
-from utils.helpers import load_css
 from utils.db    import init_db, test_connection
 
 st.set_page_config(
@@ -16,7 +15,8 @@ st.set_page_config(
 )
 
 # Load CSS
-load_css()
+with open("assets/styles.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Init DB on first load
 if "db_initialized" not in st.session_state:

@@ -6,7 +6,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from datetime import date
 from utils.auth    import require_auth
-from utils.helpers import load_css
 from utils.queries import (
     get_all_events, get_event_by_id, update_event, delete_event,
     get_event_fields, get_registration_fields,
@@ -19,15 +18,15 @@ from components.cards   import page_header, section_title, empty_state, event_ca
 from components.forms   import render_event_field_builder, render_registration_field_builder
 
 # ── PAGE CONFIG ───────────────────────────────────────────────────────────────
-import streamlit as st
-
 st.set_page_config(
-    page_title="Campus Events Admin",
+    page_title="CampusEvents Admin",
+    page_icon="🎓",
     layout="wide",
-    initial_sidebar_state="expanded"   # 🔥 important
+    initial_sidebar_state="collapsed",
 )
 
-load_css()
+with open("assets/styles.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 require_auth()
 render_sidebar(active_page="Manage Events")

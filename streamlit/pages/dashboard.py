@@ -10,7 +10,6 @@ import plotly.graph_objects as go
 from datetime import date, timedelta
 
 from utils.auth    import require_auth
-from utils.helpers import load_css
 from utils.queries import (
     get_analytics_overview, get_registrations_per_event,
     get_registration_trend, get_recent_registrations,
@@ -22,15 +21,15 @@ from components.cards   import kpi_card, page_header, section_title, empty_state
 from components.forms   import csv_download_button
 
 # ── PAGE CONFIG ───────────────────────────────────────────────────────────────
-import streamlit as st
-
 st.set_page_config(
-    page_title="Campus Events Admin",
+    page_title="CampusEvents Admin",
+    page_icon="🎓",
     layout="wide",
-    initial_sidebar_state="expanded"   # 🔥 important
+    initial_sidebar_state="collapsed",
 )
 
-load_css()
+with open("assets/styles.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 require_auth()
 render_sidebar(active_page="Dashboard")
