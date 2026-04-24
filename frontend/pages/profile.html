@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -7,151 +8,152 @@
   <link rel="stylesheet" href="../css/style.css">
   <script>window.API_BASE = 'https://campus-events-management-system.onrender.com';</script>
 </head>
+
 <body>
-<script src="../js/api.js"></script>
-<script src="../js/navbar.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/navbar.js"></script>
 
-<main class="page-wrapper" style="max-width:820px;">
+  <main class="page-wrapper" style="max-width:820px;">
 
-  <!-- PROFILE CARD --------------------------------------------------------->
-  <div class="profile-card" id="profile-card">
-    <div class="profile-avatar" id="profile-avatar">?</div>
-    <div>
-      <div style="font-size:1.2rem;font-weight:700;" id="profile-name">—</div>
-      <div style="font-size:.85rem;color:var(--text2);margin-top:.2rem;" id="profile-email">—</div>
-      <div style="font-size:.78rem;color:var(--text3);margin-top:.4rem;" id="profile-joined">Joined —</div>
-    </div>
-    <div style="margin-left:auto;">
-      <button class="btn btn-ghost btn-sm" data-logout>Logout</button>
-    </div>
-  </div>
-
-  <!-- STATS ROW ------------------------------------------------------------>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;">
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
-                padding:1.25rem;text-align:center;">
-      <div style="font-size:1.8rem;font-weight:800;color:var(--accent);font-family:'JetBrains Mono',monospace;"
-           id="stat-total">—</div>
-      <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-top:.3rem;">
-        Total
+    <!-- PROFILE CARD --------------------------------------------------------->
+    <div class="profile-card" id="profile-card">
+      <div class="profile-avatar" id="profile-avatar">?</div>
+      <div>
+        <div style="font-size:1.2rem;font-weight:700;" id="profile-name">—</div>
+        <div style="font-size:.85rem;color:var(--text2);margin-top:.2rem;" id="profile-email">—</div>
+        <div style="font-size:.78rem;color:var(--text3);margin-top:.4rem;" id="profile-joined">Joined —</div>
+      </div>
+      <div style="margin-left:auto;">
+        <button class="btn btn-ghost btn-sm" data-logout>Logout</button>
       </div>
     </div>
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
-                padding:1.25rem;text-align:center;">
-      <div style="font-size:1.8rem;font-weight:800;color:var(--success);font-family:'JetBrains Mono',monospace;"
-           id="stat-upcoming">—</div>
-      <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-top:.3rem;">
-        Upcoming
-      </div>
-    </div>
-    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
-                padding:1.25rem;text-align:center;">
-      <div style="font-size:1.8rem;font-weight:800;color:var(--text3);font-family:'JetBrains Mono',monospace;"
-           id="stat-past">—</div>
-      <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-top:.3rem;">
-        Attended
-      </div>
-    </div>
-  </div>
 
-  <!-- TABS ----------------------------------------------------------------->
-  <div style="display:flex;gap:.5rem;margin-bottom:1.5rem;background:var(--bg2);
+    <!-- STATS ROW ------------------------------------------------------------>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+                padding:1.25rem;text-align:center;">
+        <div style="font-size:1.8rem;font-weight:800;color:var(--accent);font-family:'JetBrains Mono',monospace;"
+          id="stat-total">—</div>
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-top:.3rem;">
+          Total
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+                padding:1.25rem;text-align:center;">
+        <div style="font-size:1.8rem;font-weight:800;color:var(--success);font-family:'JetBrains Mono',monospace;"
+          id="stat-upcoming">—</div>
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-top:.3rem;">
+          Upcoming
+        </div>
+      </div>
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);
+                padding:1.25rem;text-align:center;">
+        <div style="font-size:1.8rem;font-weight:800;color:var(--text3);font-family:'JetBrains Mono',monospace;"
+          id="stat-past">—</div>
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text3);margin-top:.3rem;">
+          Attended
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS ----------------------------------------------------------------->
+    <div style="display:flex;gap:.5rem;margin-bottom:1.5rem;background:var(--bg2);
               border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px;">
-    <button class="btn tab-btn active" data-tab="upcoming" style="flex:1;background:var(--accent);color:#000;">
-      Upcoming
-    </button>
-    <button class="btn tab-btn" data-tab="past" style="flex:1;background:transparent;color:var(--text2);">
-      Past Events
-    </button>
-  </div>
-
-  <!-- REGISTRATIONS LIST -------------------------------------------------->
-  <div id="reg-list">
-    <div style="display:flex;justify-content:center;padding:3rem;">
-      <div class="spinner spinner-lg"></div>
+      <button class="btn tab-btn active" data-tab="upcoming" style="flex:1;background:var(--accent);color:#000;">
+        Upcoming
+      </button>
+      <button class="btn tab-btn" data-tab="past" style="flex:1;background:transparent;color:var(--text2);">
+        Past Events
+      </button>
     </div>
-  </div>
 
-</main>
+    <!-- REGISTRATIONS LIST -------------------------------------------------->
+    <div id="reg-list">
+      <div style="display:flex;justify-content:center;padding:3rem;">
+        <div class="spinner spinner-lg"></div>
+      </div>
+    </div>
 
-<script>
-requireAuth('../pages/login.html');
+  </main>
 
-let allRegs  = [];
-let activeTab = 'upcoming';
+  <script>
+    requireAuth('../pages/login.html');
 
-// ── INIT ──────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async () => {
-  hydrateProfile();
-  await loadRegistrations();
-  setupTabs();
-});
+    let allRegs = [];
+    let activeTab = 'upcoming';
 
-function hydrateProfile() {
-  const user = API.getUser();
-  if (!user) return;
-  const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
-  document.getElementById('profile-avatar').textContent = initials;
-  document.getElementById('profile-name').textContent   = user.name;
-  document.getElementById('profile-email').textContent  = user.email;
-}
+    // ── INIT ──────────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', async () => {
+      hydrateProfile();
+      await loadRegistrations();
+      setupTabs();
+    });
 
-// ── LOAD ──────────────────────────────────────────────────────────────────
-async function loadRegistrations() {
-  try {
-    allRegs = await API.getMyRegistrations();
-    const upcoming = allRegs.filter(r => !r.event.is_past);
-    const past     = allRegs.filter(r => r.event.is_past);
-    document.getElementById('stat-total').textContent    = allRegs.length;
-    document.getElementById('stat-upcoming').textContent = upcoming.length;
-    document.getElementById('stat-past').textContent     = past.length;
-    renderList(activeTab);
-  } catch (err) {
-    document.getElementById('reg-list').innerHTML = `
+    function hydrateProfile() {
+      const user = API.getUser();
+      if (!user) return;
+      const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      document.getElementById('profile-avatar').textContent = initials;
+      document.getElementById('profile-name').textContent = user.name;
+      document.getElementById('profile-email').textContent = user.email;
+    }
+
+    // ── LOAD ──────────────────────────────────────────────────────────────────
+    async function loadRegistrations() {
+      try {
+        allRegs = await API.getMyRegistrations();
+        const upcoming = allRegs.filter(r => !r.event.is_past);
+        const past = allRegs.filter(r => r.event.is_past);
+        document.getElementById('stat-total').textContent = allRegs.length;
+        document.getElementById('stat-upcoming').textContent = upcoming.length;
+        document.getElementById('stat-past').textContent = past.length;
+        renderList(activeTab);
+      } catch (err) {
+        document.getElementById('reg-list').innerHTML = `
       <div class="empty"><span class="empty-icon">⚠️</span>Failed to load registrations.</div>`;
-  }
-}
+      }
+    }
 
-function renderList(tab) {
-  activeTab = tab;
-  const filtered = allRegs.filter(r => tab === 'upcoming' ? !r.event.is_past : r.event.is_past);
-  const list = document.getElementById('reg-list');
+    function renderList(tab) {
+      activeTab = tab;
+      const filtered = allRegs.filter(r => tab === 'upcoming' ? !r.event.is_past : r.event.is_past);
+      const list = document.getElementById('reg-list');
 
-  if (!filtered.length) {
-    list.innerHTML = `<div class="empty">
+      if (!filtered.length) {
+        list.innerHTML = `<div class="empty">
       <span class="empty-icon">${tab === 'upcoming' ? '🗓️' : '📚'}</span>
       ${tab === 'upcoming' ? 'No upcoming events. <a href="../index.html" style="color:var(--accent)">Browse events →</a>' : 'No past events yet.'}
     </div>`;
-    return;
-  }
-
-  list.innerHTML = filtered.map(r => buildRegItem(r)).join('');
-
-  // Bind cancel buttons
-  list.querySelectorAll('[data-cancel]').forEach(btn => {
-    btn.addEventListener('click', () => cancelReg(parseInt(btn.dataset.cancel), btn));
-  });
-
-  // Bind answer toggles
-  list.querySelectorAll('[data-toggle]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const answers = document.getElementById(`answers-${btn.dataset.toggle}`);
-      if (answers) {
-        const visible = answers.style.display !== 'none';
-        answers.style.display = visible ? 'none' : 'block';
-        btn.textContent = visible ? 'Show details ↓' : 'Hide details ↑';
+        return;
       }
-    });
-  });
-}
 
-function buildRegItem(r) {
-  const isPast   = r.event.is_past;
-  const imgHtml  = r.event.image_url
-    ? `<img src="${r.event.image_url}" alt="${r.event.title}" onerror="this.style.display='none'">`
-    : `<span style="font-size:1.8rem;opacity:.3;">🎓</span>`;
+      list.innerHTML = filtered.map(r => buildRegItem(r)).join('');
 
-  const answersHtml = r.answers?.length ? `
+      // Bind cancel buttons
+      list.querySelectorAll('[data-cancel]').forEach(btn => {
+        btn.addEventListener('click', () => cancelReg(parseInt(btn.dataset.cancel), btn));
+      });
+
+      // Bind answer toggles
+      list.querySelectorAll('[data-toggle]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const answers = document.getElementById(`answers-${btn.dataset.toggle}`);
+          if (answers) {
+            const visible = answers.style.display !== 'none';
+            answers.style.display = visible ? 'none' : 'block';
+            btn.textContent = visible ? 'Show details ↓' : 'Hide details ↑';
+          }
+        });
+      });
+    }
+
+    function buildRegItem(r) {
+      const isPast = r.event.is_past;
+      const imgHtml = r.event.image_url
+        ? `<img src="${r.event.image_url}" alt="${r.event.title}" onerror="this.style.display='none'">`
+        : `<span style="font-size:1.8rem;opacity:.3;">🎓</span>`;
+
+      const answersHtml = r.answers?.length ? `
     <div id="answers-${r.id}" style="display:none;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border);">
       ${r.answers.map(a => `
         <div style="display:flex;justify-content:space-between;font-size:.8rem;padding:.25rem 0;">
@@ -163,7 +165,7 @@ function buildRegItem(r) {
             style="margin-top:.5rem;font-size:.75rem;padding:.2rem .5rem;">Show details ↓</button>
   ` : '';
 
-  return `
+      return `
   <div class="reg-item" style="margin-bottom:1rem;">
     <div class="reg-item-thumb">${imgHtml}</div>
     <div class="reg-item-body">
@@ -179,39 +181,40 @@ function buildRegItem(r) {
     <div class="reg-item-actions">
       ${!isPast ? `
         <button class="btn btn-danger btn-sm" data-cancel="${r.id}">Cancel</button>` :
-        `<span class="badge badge-past">Past</span>`}
+          `<span class="badge badge-past">Past</span>`}
     </div>
   </div>`;
-}
+    }
 
-// ── CANCEL ────────────────────────────────────────────────────────────────
-async function cancelReg(regId, btn) {
-  if (!confirm('Cancel this registration?')) return;
-  btn.disabled = true; btn.textContent = '…';
-  try {
-    await API.cancelRegistration(regId);
-    toast('Registration cancelled', 'success');
-    await loadRegistrations();
-  } catch (err) {
-    toast(err.message || 'Cannot cancel', 'error');
-    btn.disabled = false; btn.textContent = 'Cancel';
-  }
-}
+    // ── CANCEL ────────────────────────────────────────────────────────────────
+    async function cancelReg(regId, btn) {
+      if (!confirm('Cancel this registration?')) return;
+      btn.disabled = true; btn.textContent = '…';
+      try {
+        await API.cancelRegistration(regId);
+        toast('Registration cancelled', 'success');
+        await loadRegistrations();
+      } catch (err) {
+        toast(err.message || 'Cannot cancel', 'error');
+        btn.disabled = false; btn.textContent = 'Cancel';
+      }
+    }
 
-// ── TABS ──────────────────────────────────────────────────────────────────
-function setupTabs() {
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => {
-        b.style.background = 'transparent'; b.style.color = 'var(--text2)';
-        b.classList.remove('active');
+    // ── TABS ──────────────────────────────────────────────────────────────────
+    function setupTabs() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => {
+            b.style.background = 'transparent'; b.style.color = 'var(--text2)';
+            b.classList.remove('active');
+          });
+          btn.style.background = 'var(--accent)'; btn.style.color = '#000';
+          btn.classList.add('active');
+          renderList(btn.dataset.tab);
+        });
       });
-      btn.style.background = 'var(--accent)'; btn.style.color = '#000';
-      btn.classList.add('active');
-      renderList(btn.dataset.tab);
-    });
-  });
-}
-</script>
+    }
+  </script>
 </body>
+
 </html>

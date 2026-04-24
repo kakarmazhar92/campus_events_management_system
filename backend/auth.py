@@ -11,9 +11,6 @@ from backend import models
 SECRET_KEY  = os.getenv("SECRET_KEY", "campus_secret_change_in_production_2024")
 ALGORITHM   = "HS256"
 ACCESS_TTL  = 60 * 24 * 7   # 7 days in minutes
-
-bearer = HTTPBearer(auto_error=False)
-
 def hash_password(password: str) -> str:
     salt = "campus_user_salt_2024"
     return hashlib.sha256(f"{salt}{password}".encode()).hexdigest()

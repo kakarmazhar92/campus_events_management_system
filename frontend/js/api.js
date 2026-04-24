@@ -4,13 +4,13 @@ const API = (() => {
   const BASE = window.API_BASE || 'https://campus-events-management-system.onrender.com';
 
   // ── TOKEN ────────────────────────────────────────────────────────────────
-  const getToken  = ()    => localStorage.getItem('ce_token');
-  const getUser   = ()    => JSON.parse(localStorage.getItem('ce_user') || 'null');
-  const setAuth   = (tok, user) => {
+  const getToken = () => localStorage.getItem('ce_token');
+  const getUser = () => JSON.parse(localStorage.getItem('ce_user') || 'null');
+  const setAuth = (tok, user) => {
     localStorage.setItem('ce_token', tok);
     localStorage.setItem('ce_user', JSON.stringify(user));
   };
-  const clearAuth = ()    => {
+  const clearAuth = () => {
     localStorage.removeItem('ce_token');
     localStorage.removeItem('ce_user');
   };
@@ -34,16 +34,16 @@ const API = (() => {
         // Try to wake up Render free tier with a /health ping
         try {
           await fetch(`${BASE}/health`, { method: 'GET', signal: AbortSignal.timeout(3000) });
-        } catch (_) {}
+        } catch (_) { }
         throw { status: 0, message: 'Cannot reach server. If this is the first request in a while, the server may be waking up (30s). Please try again.' };
       }
       throw err;
     }
   }
 
-  const get  = (path, auth = false) => request('GET',    path, null, auth);
-  const post = (path, body, auth = false) => request('POST',   path, body, auth);
-  const del  = (path, auth = true)  => request('DELETE', path, null, auth);
+  const get = (path, auth = false) => request('GET', path, null, auth);
+  const post = (path, body, auth = false) => request('POST', path, body, auth);
+  const del = (path, auth = true) => request('DELETE', path, null, auth);
 
   // ── AUTH ENDPOINTS ────────────────────────────────────────────────────────
   async function register(name, email, password) {
@@ -62,13 +62,13 @@ const API = (() => {
   }
 
   // ── EVENT ENDPOINTS ───────────────────────────────────────────────────────
-  const getEvents     = (q = '') => get(`/api/events${q ? '?q=' + encodeURIComponent(q) : ''}`);
-  const getEvent      = (id)     => get(`/api/events/${id}`);
+  const getEvents = (q = '') => get(`/api/events${q ? '?q=' + encodeURIComponent(q) : ''}`);
+  const getEvent = (id) => get(`/api/events/${id}`);
   const registerEvent = (id, payload) => post(`/api/events/${id}/register`, payload, true);
 
   // ── PROFILE ENDPOINTS ──────────────────────────────────────────────────────
-  const getMyRegistrations  = ()    => get('/api/my-registrations', true);
-  const cancelRegistration  = (id)  => del(`/api/my-registrations/${id}`);
+  const getMyRegistrations = () => get('/api/my-registrations', true);
+  const cancelRegistration = (id) => del(`/api/my-registrations/${id}`);
 
   return {
     getToken, getUser, isLoggedIn, clearAuth, setAuth,
@@ -101,32 +101,32 @@ function toast(message, type = 'info', duration = 3500) {
 function hydrateNavbar() {
   const user = API.getUser();
   const authLinks = document.getElementById('auth-links');
-  const userMenu  = document.getElementById('user-menu');
+  const userMenu = document.getElementById('user-menu');
   if (!authLinks || !userMenu) return;
 
   if (user) {
     authLinks.style.display = 'none';
-    userMenu.style.display  = 'flex';
-    const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+    userMenu.style.display = 'flex';
+    const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     const av = document.getElementById('nav-avatar');
     if (av) av.textContent = initials;
     const nm = document.getElementById('nav-username');
     if (nm) nm.textContent = user.name.split(' ')[0];
   } else {
     authLinks.style.display = 'flex';
-    userMenu.style.display  = 'none';
+    userMenu.style.display = 'none';
   }
 }
 
 // ── FORMAT HELPERS ─────────────────────────────────────────────────────────
 function formatDate(dateStr) {
   if (!dateStr) return '—';
-  return new Date(dateStr).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+  return new Date(dateStr).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 function daysUntil(dateStr) {
   const diff = new Date(dateStr) - new Date();
   const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-  if (days < 0)  return 'Past';
+  if (days < 0) return 'Past';
   if (days === 0) return 'Today';
   if (days === 1) return 'Tomorrow';
   return `In ${days} days`;

@@ -1,8 +1,6 @@
 # components/navbar.py
-
 import streamlit as st
 from utils.auth import logout
-
 
 def render_navbar(page_title: str = "Dashboard"):
     admin = st.session_state.get("admin_user", "Admin")

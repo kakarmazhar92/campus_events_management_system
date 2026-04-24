@@ -3,7 +3,6 @@
 import streamlit as st
 from datetime import date
 
-
 def kpi_card(label: str, value, sub: str = "", icon: str = ""):
     st.markdown(f"""
     <div class="kpi-card">

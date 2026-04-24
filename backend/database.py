@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = int(os.getenv("DB_PORT", "3306"))        # BUG FIX: was crashing if env var missing
+DB_PORT = int(os.getenv("DB_PORT", "3306"))       
 DB_USER = os.getenv("DB_USER", "root")
 DB_PASS = quote_plus(os.getenv("DB_PASSWORD", "")) # encode special chars in password
 DB_NAME = os.getenv("DB_NAME", "campus_events")
@@ -17,7 +17,7 @@ DATABASE_URL = (
     f"mysql+mysqlconnector://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
-# BUG FIX: was creating engine TWICE — first bare, then with pool config (duplicate, wasted conn)
+
 engine = create_engine(
     DATABASE_URL,
     pool_size=10,

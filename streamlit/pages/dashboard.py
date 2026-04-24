@@ -1,5 +1,4 @@
 # pages/dashboard.py
-
 import streamlit as st
 import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
@@ -41,14 +40,14 @@ if os.path.exists(css_path):
 
 # 🔥 FORCE SIDEBAR ALWAYS OPEN (HARD LOCK)
 custom_css += """
-/* 🚫 Disable collapse completely */
+/* Disable collapse completely */
 [data-testid="stSidebar"][aria-expanded="false"] {
     min-width: 260px !important;
     max-width: 260px !important;
     transform: translateX(0px) !important;
 }
 
-/* 🚫 Keep sidebar always visible */
+/* Keep sidebar always visible */
 [data-testid="stSidebar"] {
     display: block !important;
     visibility: visible !important;
@@ -56,17 +55,17 @@ custom_css += """
     max-width: 260px !important;
 }
 
-/* 🚫 Hide toggle button completely */
+/* Hide toggle button completely */
 button[title="Toggle sidebar"] {
     display: none !important;
 }
 
-/* 🚫 Prevent content shifting */
+/* Prevent content shifting */
 section.main {
     margin-left: 260px !important;
 }
 
-/* 📱 Mobile fix */
+/* Mobile fix */
 @media (max-width: 768px) {
     [data-testid="stSidebar"] {
         min-width: 200px !important;
@@ -96,26 +95,6 @@ PLOTLY_LAYOUT = dict(
 
 # ── HEADER ────────────────────────────────────────────────────────────────────
 page_header("Analytics", "Dashboard", f"Last updated: {date.today().strftime('%B %d, %Y')}")
-
-# # ── FILTERS ──────────────────────────────────────────────────────────────────
-# with st.expander("🔍 Filters", expanded=False):
-#     fc1, fc2, fc3 = st.columns(3)
-#     all_events = get_all_events()
-#     event_options = {e["title"]: e["id"] for e in all_events}
-
-#     with fc1:
-#         selected_event_name = st.selectbox(
-#             "Filter by Event", ["All Events"] + list(event_options.keys()),
-#             key="dash_event_filter"
-#         )
-#     with fc2:
-#         trend_days = st.selectbox("Trend Period", [7, 14, 30, 60, 90], index=2,
-#                                   key="dash_trend_days")
-#     with fc3:
-#         recent_limit = st.selectbox("Recent Registrations", [5, 10, 20, 50], index=1,
-#                                     key="dash_recent_limit")
-
-# selected_event_id = event_options.get(selected_event_name) if selected_event_name != "All Events" else None
 
 # ── DEFAULT CONFIG (NO FILTERS) ───────────────────────────────────────────────
 trend_days = 30
@@ -233,7 +212,7 @@ with c_table:
             "created_at": st.column_config.DatetimeColumn("Registered At"),
         }
 
-        # 🔥 THIS WAS MISSING
+        # THIS WAS MISSING
         st.dataframe(
             df_recent,
             use_container_width=True,

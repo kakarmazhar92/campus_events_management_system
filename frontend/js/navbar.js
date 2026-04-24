@@ -2,7 +2,7 @@
 
 (function () {
   const isRoot = !window.location.pathname.includes('/pages/');
-  const root   = isRoot ? '' : '../';
+  const root = isRoot ? '' : '../';
 
   document.body.insertAdjacentHTML('afterbegin', `
   <nav class="navbar">

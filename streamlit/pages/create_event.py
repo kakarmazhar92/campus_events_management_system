@@ -36,16 +36,16 @@ if os.path.exists(css_path):
     with open(css_path) as f:
         custom_css = f.read()
 
-# 🔥 FORCE SIDEBAR ALWAYS OPEN (HARD LOCK)
+# FORCE SIDEBAR ALWAYS OPEN (HARD LOCK)
 custom_css += """
-/* 🚫 Disable collapse completely */
+/* Disable collapse completely */
 [data-testid="stSidebar"][aria-expanded="false"] {
     min-width: 260px !important;
     max-width: 260px !important;
     transform: translateX(0px) !important;
 }
 
-/* 🚫 Keep sidebar always visible */
+/* Keep sidebar always visible */
 [data-testid="stSidebar"] {
     display: block !important;
     visibility: visible !important;
@@ -53,17 +53,17 @@ custom_css += """
     max-width: 260px !important;
 }
 
-/* 🚫 Hide toggle button completely */
+/* Hide toggle button completely */
 button[title="Toggle sidebar"] {
     display: none !important;
 }
 
-/* 🚫 Prevent content shifting */
+/* Prevent content shifting */
 section.main {
     margin-left: 260px !important;
 }
 
-/* 📱 Mobile fix */
+/* Mobile fix */
 @media (max-width: 768px) {
     [data-testid="stSidebar"] {
         min-width: 200px !important;

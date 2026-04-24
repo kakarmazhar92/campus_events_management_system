@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,145 +9,153 @@
   <script>window.API_BASE = 'https://campus-events-management-system.onrender.com';</script>
   <link rel="icon" href="/favicon.ico">
 </head>
+
 <body>
-<script src="js/api.js"></script>
-<script src="js/navbar.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/navbar.js"></script>
 
-<main class="page-wrapper">
+  <main class="page-wrapper">
 
-  <!-- HERO ---------------------------------------------------------------->
-  <section class="hero" id="hero-section">
-    <h1 class="hero-title">Discover Campus<br><span>Events</span></h1>
-    <p class="hero-sub">Register for workshops, fests, seminars and more — all in one place.</p>
-    <div class="hero-actions">
-      <a href="#events" class="btn btn-primary btn-lg">Browse Events</a>
-      <a href="pages/register.html" class="btn btn-outline btn-lg" id="hero-cta">Get Started</a>
-    </div>
-    <div class="hero-stats" id="hero-stats">
-      <div><div class="hero-stat-num" id="stat-events">—</div><div class="hero-stat-label">Events</div></div>
-      <div><div class="hero-stat-num" id="stat-upcoming">—</div><div class="hero-stat-label">Upcoming</div></div>
-    </div>
-  </section>
-
-  <!-- FILTER BAR --------------------------------------------------------->
-  <div class="filter-bar" id="events">
-    <div class="search-wrap">
-      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-      <input type="text" class="form-control search-input" id="search-input"
-             placeholder="Search events…" autocomplete="off">
-    </div>
-    <select class="form-control" id="filter-status" style="width:auto;min-width:130px;">
-      <option value="all">All Events</option>
-      <option value="upcoming">Upcoming</option>
-      <option value="past">Past</option>
-    </select>
-  </div>
-
-  <!-- EVENTS GRID --------------------------------------------------------->
-  <div id="events-grid" class="events-grid">
-    <!-- skeleton cards -->
-    <div class="skeleton skeleton-card"></div>
-    <div class="skeleton skeleton-card"></div>
-    <div class="skeleton skeleton-card"></div>
-  </div>
-
-</main>
-
-<!-- REGISTRATION MODAL --------------------------------------------------->
-<div class="modal-overlay" id="reg-modal">
-  <div class="modal">
-    <div class="modal-header">
-      <div>
-        <div class="modal-title" id="modal-event-title">Register for Event</div>
-        <div style="font-size:.8rem;color:var(--text2);margin-top:.2rem;" id="modal-event-date"></div>
+    <!-- HERO ---------------------------------------------------------------->
+    <section class="hero" id="hero-section">
+      <h1 class="hero-title">Discover Campus<br><span>Events</span></h1>
+      <p class="hero-sub">Register for workshops, fests, seminars and more — all in one place.</p>
+      <div class="hero-actions">
+        <a href="#events" class="btn btn-primary btn-lg">Browse Events</a>
+        <a href="pages/register.html" class="btn btn-outline btn-lg" id="hero-cta">Get Started</a>
       </div>
-      <button class="modal-close" id="modal-close">✕</button>
+      <div class="hero-stats" id="hero-stats">
+        <div>
+          <div class="hero-stat-num" id="stat-events">—</div>
+          <div class="hero-stat-label">Events</div>
+        </div>
+        <div>
+          <div class="hero-stat-num" id="stat-upcoming">—</div>
+          <div class="hero-stat-label">Upcoming</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILTER BAR --------------------------------------------------------->
+    <div class="filter-bar" id="events">
+      <div class="search-wrap">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+        <input type="text" class="form-control search-input" id="search-input" placeholder="Search events…"
+          autocomplete="off">
+      </div>
+      <select class="form-control" id="filter-status" style="width:auto;min-width:130px;">
+        <option value="all">All Events</option>
+        <option value="upcoming">Upcoming</option>
+        <option value="past">Past</option>
+      </select>
     </div>
-    <div class="modal-body" id="modal-body">
-      <!-- dynamic fields injected here -->
+
+    <!-- EVENTS GRID --------------------------------------------------------->
+    <div id="events-grid" class="events-grid">
+      <!-- skeleton cards -->
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
-      <button class="btn btn-primary" id="modal-submit">Register →</button>
+
+  </main>
+
+  <!-- REGISTRATION MODAL --------------------------------------------------->
+  <div class="modal-overlay" id="reg-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title" id="modal-event-title">Register for Event</div>
+          <div style="font-size:.8rem;color:var(--text2);margin-top:.2rem;" id="modal-event-date"></div>
+        </div>
+        <button class="modal-close" id="modal-close">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- dynamic fields injected here -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="modal-submit">Register →</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script>
-let allEvents   = [];
-let currentEvent = null;
+  <script>
+    let allEvents = [];
+    let currentEvent = null;
 
-// ── INIT ──────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', async () => {
-  // Hide "Get Started" if already logged in
-  if (API.isLoggedIn()) {
-    document.getElementById('hero-cta').href = 'pages/profile.html';
-    document.getElementById('hero-cta').textContent = 'My Profile';
-  }
-  await loadEvents();
-  setupSearch();
-  setupModal();
-});
+    // ── INIT ──────────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Hide "Get Started" if already logged in
+      if (API.isLoggedIn()) {
+        document.getElementById('hero-cta').href = 'pages/profile.html';
+        document.getElementById('hero-cta').textContent = 'My Profile';
+      }
+      await loadEvents();
+      setupSearch();
+      setupModal();
+    });
 
-// ── LOAD EVENTS ────────────────────────────────────────────────────────────
-async function loadEvents(query = '') {
-  try {
-    allEvents = await API.getEvents(query);
-    // stats
-    document.getElementById('stat-events').textContent   = allEvents.length;
-    document.getElementById('stat-upcoming').textContent = allEvents.filter(e => !e.is_past).length;
-    renderEvents(allEvents);
-  } catch (err) {
-    document.getElementById('events-grid').innerHTML = `
+    // ── LOAD EVENTS ────────────────────────────────────────────────────────────
+    async function loadEvents(query = '') {
+      try {
+        allEvents = await API.getEvents(query);
+        // stats
+        document.getElementById('stat-events').textContent = allEvents.length;
+        document.getElementById('stat-upcoming').textContent = allEvents.filter(e => !e.is_past).length;
+        renderEvents(allEvents);
+      } catch (err) {
+        document.getElementById('events-grid').innerHTML = `
       <div style="grid-column:1/-1;">
         <div class="empty"><span class="empty-icon">⚠️</span>Could not load events. Make sure the API is running.</div>
       </div>`;
-  }
-}
+      }
+    }
 
-// ── RENDER CARDS ──────────────────────────────────────────────────────────
-function renderEvents(events) {
-  const grid = document.getElementById('events-grid');
-  const status = document.getElementById('filter-status').value;
-  let filtered = events;
-  if (status === 'upcoming') filtered = events.filter(e => !e.is_past);
-  if (status === 'past')     filtered = events.filter(e => e.is_past);
+    // ── RENDER CARDS ──────────────────────────────────────────────────────────
+    function renderEvents(events) {
+      const grid = document.getElementById('events-grid');
+      const status = document.getElementById('filter-status').value;
+      let filtered = events;
+      if (status === 'upcoming') filtered = events.filter(e => !e.is_past);
+      if (status === 'past') filtered = events.filter(e => e.is_past);
 
-  if (!filtered.length) {
-    grid.innerHTML = `<div style="grid-column:1/-1;">
+      if (!filtered.length) {
+        grid.innerHTML = `<div style="grid-column:1/-1;">
       <div class="empty"><span class="empty-icon">🎭</span>No events found.</div>
     </div>`;
-    return;
-  }
+        return;
+      }
 
-  grid.innerHTML = filtered.map(e => buildCard(e)).join('');
+      grid.innerHTML = filtered.map(e => buildCard(e)).join('');
 
-  // Bind register buttons
-  grid.querySelectorAll('[data-reg]').forEach(btn => {
-    btn.addEventListener('click', () => openRegModal(parseInt(btn.dataset.reg)));
-  });
-}
+      // Bind register buttons
+      grid.querySelectorAll('[data-reg]').forEach(btn => {
+        btn.addEventListener('click', () => openRegModal(parseInt(btn.dataset.reg)));
+      });
+    }
 
-function buildCard(e) {
-  const fillPct  = Math.round((e.reg_count / e.capacity) * 100);
-  const barColor = fillPct >= 90 ? 'var(--error)' : fillPct >= 70 ? '#f97316' : 'var(--accent)';
-  const badge    = e.is_past       ? '<span class="badge badge-past">Past</span>'
-                 : e.is_registered ? '<span class="badge badge-registered">✓ Registered</span>'
-                 : e.is_full       ? '<span class="badge badge-full">Full</span>'
-                 :                   '<span class="badge badge-upcoming">Upcoming</span>';
-  const imgHtml  = e.image_url
-    ? `<img src="${e.image_url}" alt="${e.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'card-img-placeholder\\'>🎓</div>'">`
-    : '<div class="card-img-placeholder">🎓</div>';
+    function buildCard(e) {
+      const fillPct = Math.round((e.reg_count / e.capacity) * 100);
+      const barColor = fillPct >= 90 ? 'var(--error)' : fillPct >= 70 ? '#f97316' : 'var(--accent)';
+      const badge = e.is_past ? '<span class="badge badge-past">Past</span>'
+        : e.is_registered ? '<span class="badge badge-registered">✓ Registered</span>'
+          : e.is_full ? '<span class="badge badge-full">Full</span>'
+            : '<span class="badge badge-upcoming">Upcoming</span>';
+      const imgHtml = e.image_url
+        ? `<img src="${e.image_url}" alt="${e.title}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'card-img-placeholder\\'>🎓</div>'">`
+        : '<div class="card-img-placeholder">🎓</div>';
 
-  const btnDisabled = e.is_past || e.is_full || e.is_registered || e.deadline_passed;
-  const btnLabel    = e.is_registered ? '✓ Registered'
-                    : e.is_full       ? 'Event Full'
-                    : e.is_past || e.deadline_passed ? 'Registration Closed'
-                    : 'Register →';
+      const btnDisabled = e.is_past || e.is_full || e.is_registered || e.deadline_passed;
+      const btnLabel = e.is_registered ? '✓ Registered'
+        : e.is_full ? 'Event Full'
+          : e.is_past || e.deadline_passed ? 'Registration Closed'
+            : 'Register →';
 
-  return `
+      return `
   <article class="card">
     <a href="pages/event.html?id=${e.id}" class="card-img">${imgHtml}</a>
     <div class="card-body">
@@ -162,7 +171,7 @@ function buildCard(e) {
 
       ${e.event_fields && e.event_fields.length ? `
       <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.75rem;">
-        ${e.event_fields.slice(0,2).map(f => `
+        ${e.event_fields.slice(0, 2).map(f => `
           <span style="font-size:.72rem;background:var(--bg3);border:1px solid var(--border);
                        border-radius:4px;padding:.15rem .5rem;color:var(--text2);">
             ${f.field_name}: <strong style="color:var(--text)">${f.field_value || '—'}</strong>
@@ -184,56 +193,56 @@ function buildCard(e) {
       </div>
     </div>
   </article>`;
-}
+    }
 
-// ── SEARCH + FILTER ────────────────────────────────────────────────────────
-function setupSearch() {
-  let timer;
-  document.getElementById('search-input').addEventListener('input', e => {
-    clearTimeout(timer);
-    timer = setTimeout(() => loadEvents(e.target.value), 350);
-  });
-  document.getElementById('filter-status').addEventListener('change', () => renderEvents(allEvents));
-}
+    // ── SEARCH + FILTER ────────────────────────────────────────────────────────
+    function setupSearch() {
+      let timer;
+      document.getElementById('search-input').addEventListener('input', e => {
+        clearTimeout(timer);
+        timer = setTimeout(() => loadEvents(e.target.value), 350);
+      });
+      document.getElementById('filter-status').addEventListener('change', () => renderEvents(allEvents));
+    }
 
-// ── MODAL ─────────────────────────────────────────────────────────────────
-function setupModal() {
-  const overlay = document.getElementById('reg-modal');
-  document.getElementById('modal-close').addEventListener('click',  closeModal);
-  document.getElementById('modal-cancel').addEventListener('click', closeModal);
-  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
-  document.getElementById('modal-submit').addEventListener('click', submitRegistration);
-}
-function closeModal() {
-  document.getElementById('reg-modal').classList.remove('open');
-  currentEvent = null;
-}
+    // ── MODAL ─────────────────────────────────────────────────────────────────
+    function setupModal() {
+      const overlay = document.getElementById('reg-modal');
+      document.getElementById('modal-close').addEventListener('click', closeModal);
+      document.getElementById('modal-cancel').addEventListener('click', closeModal);
+      overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+      document.getElementById('modal-submit').addEventListener('click', submitRegistration);
+    }
+    function closeModal() {
+      document.getElementById('reg-modal').classList.remove('open');
+      currentEvent = null;
+    }
 
-async function openRegModal(eventId) {
-  if (!API.isLoggedIn()) {
-    toast('Please sign in to register for events', 'info');
-    setTimeout(() => window.location.href = 'pages/login.html', 1200);
-    return;
-  }
-  try {
-    const event = await API.getEvent(eventId);
-    currentEvent = event;
-    document.getElementById('modal-event-title').textContent = event.title;
-    document.getElementById('modal-event-date').textContent  = `📅 ${formatDate(event.event_date)}`;
+    async function openRegModal(eventId) {
+      if (!API.isLoggedIn()) {
+        toast('Please sign in to register for events', 'info');
+        setTimeout(() => window.location.href = 'pages/login.html', 1200);
+        return;
+      }
+      try {
+        const event = await API.getEvent(eventId);
+        currentEvent = event;
+        document.getElementById('modal-event-title').textContent = event.title;
+        document.getElementById('modal-event-date').textContent = `📅 ${formatDate(event.event_date)}`;
 
-    const user = API.getUser();
-    const body = document.getElementById('modal-body');
-    body.innerHTML = buildRegForm(event, user);
+        const user = API.getUser();
+        const body = document.getElementById('modal-body');
+        body.innerHTML = buildRegForm(event, user);
 
-    document.getElementById('reg-modal').classList.add('open');
-  } catch (err) {
-    toast('Failed to load event details', 'error');
-  }
-}
+        document.getElementById('reg-modal').classList.add('open');
+      } catch (err) {
+        toast('Failed to load event details', 'error');
+      }
+    }
 
-function buildRegForm(event, user) {
-  const nameVal = user?.name || '';
-  let html = `
+    function buildRegForm(event, user) {
+      const nameVal = user?.name || '';
+      let html = `
     <div class="form-group">
       <label class="form-label">Full Name <span style="color:var(--error)">*</span></label>
       <input type="text" class="form-control" id="reg-name" value="${nameVal}" placeholder="Your full name" required>
@@ -243,69 +252,70 @@ function buildRegForm(event, user) {
       <input type="text" class="form-control" id="reg-prn" placeholder="e.g. 22210234" required>
     </div>`;
 
-  if (event.registration_fields?.length) {
-    html += `<hr class="divider" style="margin:.5rem 0"><div class="section-label">Additional Details</div>`;
-    for (const f of event.registration_fields) {
-      html += buildDynamicField(f);
+      if (event.registration_fields?.length) {
+        html += `<hr class="divider" style="margin:.5rem 0"><div class="section-label">Additional Details</div>`;
+        for (const f of event.registration_fields) {
+          html += buildDynamicField(f);
+        }
+      }
+      return html;
     }
-  }
-  return html;
-}
 
-function buildDynamicField(field) {
-  const req   = field.is_required;
-  const label = `${field.field_name}${req ? ' <span style="color:var(--error)">*</span>' : ''}`;
-  const id    = `rf-${field.id}`;
+    function buildDynamicField(field) {
+      const req = field.is_required;
+      const label = `${field.field_name}${req ? ' <span style="color:var(--error)">*</span>' : ''}`;
+      const id = `rf-${field.id}`;
 
-  let input = '';
-  if (field.field_type === 'dropdown' && field.options?.length) {
-    input = `<select class="form-control" id="${id}" data-fid="${field.id}" ${req ? 'required' : ''}>
+      let input = '';
+      if (field.field_type === 'dropdown' && field.options?.length) {
+        input = `<select class="form-control" id="${id}" data-fid="${field.id}" ${req ? 'required' : ''}>
       <option value="">Select…</option>
       ${field.options.map(o => `<option value="${o}">${o}</option>`).join('')}
     </select>`;
-  } else if (field.field_type === 'number') {
-    input = `<input type="number" class="form-control" id="${id}" data-fid="${field.id}" placeholder="Enter number" ${req ? 'required' : ''}>`;
-  } else if (field.field_type === 'date') {
-    input = `<input type="date" class="form-control" id="${id}" data-fid="${field.id}" ${req ? 'required' : ''}>`;
-  } else {
-    input = `<input type="text" class="form-control" id="${id}" data-fid="${field.id}" placeholder="Enter ${field.field_name.toLowerCase()}" ${req ? 'required' : ''}>`;
-  }
-  return `<div class="form-group"><label class="form-label">${label}</label>${input}</div>`;
-}
-
-async function submitRegistration() {
-  if (!currentEvent) return;
-  const name = document.getElementById('reg-name').value.trim();
-  const prn  = document.getElementById('reg-prn').value.trim();
-  if (!name || !prn) { toast('Name and PRN are required', 'error'); return; }
-
-  // Collect dynamic answers
-  const answers = {};
-  document.querySelectorAll('[data-fid]').forEach(el => {
-    const val = el.value.trim();
-    if (val) answers[parseInt(el.dataset.fid)] = val;
-  });
-
-  // Validate required fields
-  for (const f of currentEvent.registration_fields || []) {
-    if (f.is_required && !answers[f.id]) {
-      toast(`"${f.field_name}" is required`, 'error'); return;
+      } else if (field.field_type === 'number') {
+        input = `<input type="number" class="form-control" id="${id}" data-fid="${field.id}" placeholder="Enter number" ${req ? 'required' : ''}>`;
+      } else if (field.field_type === 'date') {
+        input = `<input type="date" class="form-control" id="${id}" data-fid="${field.id}" ${req ? 'required' : ''}>`;
+      } else {
+        input = `<input type="text" class="form-control" id="${id}" data-fid="${field.id}" placeholder="Enter ${field.field_name.toLowerCase()}" ${req ? 'required' : ''}>`;
+      }
+      return `<div class="form-group"><label class="form-label">${label}</label>${input}</div>`;
     }
-  }
 
-  const btn = document.getElementById('modal-submit');
-  btn.disabled = true; btn.textContent = 'Registering…';
-  try {
-    await API.registerEvent(currentEvent.id, { name, prn, answers });
-    closeModal();
-    toast('Successfully registered! 🎉', 'success');
-    await loadEvents(document.getElementById('search-input').value);
-  } catch (err) {
-    toast(err.message || 'Registration failed', 'error');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Register →';
-  }
-}
-</script>
+    async function submitRegistration() {
+      if (!currentEvent) return;
+      const name = document.getElementById('reg-name').value.trim();
+      const prn = document.getElementById('reg-prn').value.trim();
+      if (!name || !prn) { toast('Name and PRN are required', 'error'); return; }
+
+      // Collect dynamic answers
+      const answers = {};
+      document.querySelectorAll('[data-fid]').forEach(el => {
+        const val = el.value.trim();
+        if (val) answers[parseInt(el.dataset.fid)] = val;
+      });
+
+      // Validate required fields
+      for (const f of currentEvent.registration_fields || []) {
+        if (f.is_required && !answers[f.id]) {
+          toast(`"${f.field_name}" is required`, 'error'); return;
+        }
+      }
+
+      const btn = document.getElementById('modal-submit');
+      btn.disabled = true; btn.textContent = 'Registering…';
+      try {
+        await API.registerEvent(currentEvent.id, { name, prn, answers });
+        closeModal();
+        toast('Successfully registered! 🎉', 'success');
+        await loadEvents(document.getElementById('search-input').value);
+      } catch (err) {
+        toast(err.message || 'Registration failed', 'error');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Register →';
+      }
+    }
+  </script>
 </body>
+
 </html>

@@ -1,5 +1,4 @@
 # components/sidebar.py
-
 import streamlit as st
 from components.navbar import render_logout_button
 
