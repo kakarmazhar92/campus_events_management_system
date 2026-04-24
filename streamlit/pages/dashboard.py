@@ -22,11 +22,12 @@ from components.cards   import kpi_card, page_header, section_title, empty_state
 from components.forms   import csv_download_button
 
 # ── PAGE CONFIG ───────────────────────────────────────────────────────────────
+import streamlit as st
+
 st.set_page_config(
-    page_title="CampusEvents Admin",
-    page_icon="🎓",
+    page_title="Campus Events Admin",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded"   # 🔥 important
 )
 
 load_css()

@@ -19,11 +19,12 @@ from components.cards   import page_header, section_title, empty_state, event_ca
 from components.forms   import render_event_field_builder, render_registration_field_builder
 
 # ── PAGE CONFIG ───────────────────────────────────────────────────────────────
+import streamlit as st
+
 st.set_page_config(
-    page_title="CampusEvents Admin",
-    page_icon="🎓",
+    page_title="Campus Events Admin",
     layout="wide",
-    initial_sidebar_state="collapsed",
+    initial_sidebar_state="expanded"   # 🔥 important
 )
 
 load_css()
