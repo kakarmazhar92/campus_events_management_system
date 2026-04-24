@@ -191,7 +191,7 @@ def register_for_event(
     # Already registered?
     existing = db.query(models.Registration).filter(
     models.Registration.event_id == event_id,
-    models.Registration.user_id == current_user.id
+    models.Registration.prn == body.prn.upper(),
 ).first()
     if existing:
         raise HTTPException(409, "You are already registered for this event")
@@ -218,10 +218,9 @@ def register_for_event(
 
     # Insert registration
     reg = models.Registration(
-        event_id=event_id,
-        name=body.name.strip(),
-        prn=body.prn.strip().upper(),
-        user_id=current_user.id   # ✅ THIS FIXES EVERYTHING
+    event_id=event_id,
+    name=body.name.strip(),
+    prn=body.prn.strip().upper(),
     )
     db.add(reg)
     db.flush()

@@ -5,16 +5,15 @@
 import os
 from dotenv import load_dotenv
 import mysql.connector
-from urllib.parse import quote_plus
 
 load_dotenv()
 
 conn = mysql.connector.connect(
-    host = os.getenv("DB_HOST"),
-    port = int(os.getenv("DB_PORT")),
-    user = os.getenv("DB_USER"),
-    password = quote_plus(os.getenv("DB_PASSWORD")),   # ✅ encode password
-    database = os.getenv("DB_NAME"),
+    host=os.getenv("DB_HOST", "localhost"),
+    port=int(os.getenv("DB_PORT", "3306")),
+    user=os.getenv("DB_USER", "root"),
+    password=os.getenv("DB_PASSWORD", ""),
+    database=os.getenv("DB_NAME", "campus_events"),
 )
 cursor = conn.cursor()
 
