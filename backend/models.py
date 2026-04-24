@@ -10,7 +10,7 @@ class User(Base):
     email        = Column(String(200), unique=True, nullable=False, index=True)
     password_hash= Column(String(255), nullable=False)
     created_at   = Column(DateTime, server_default=func.now())
-    # registrations = relationship("Registration", back_populates="user", cascade="all, delete-orphan")
+    registrations = relationship("Registration", back_populates="user")
 
 class Event(Base):
     __tablename__ = "events"
@@ -51,12 +51,14 @@ class Registration(Base):
     __table_args__ = (UniqueConstraint("prn", "event_id", name="uq_prn_event"),)
 
     id         = Column(Integer, primary_key=True, index=True)
-    event_id   = Column(Integer, ForeignKey("events.id", ondelete="CASCADE"), nullable=False)
+    event_id   = Column(Integer, ForeignKey("events.id",  ondelete="CASCADE"), nullable=False)
+    user_id    = Column(Integer, ForeignKey("users.id",   ondelete="SET NULL"), nullable=True)
     name       = Column(String(150), nullable=False)
     prn        = Column(String(50),  nullable=False)
     created_at = Column(DateTime, server_default=func.now())
 
     event   = relationship("Event", back_populates="registrations")
+    user    = relationship("User",  back_populates="registrations")
     answers = relationship(
         "RegistrationAnswer",
         back_populates="registration",

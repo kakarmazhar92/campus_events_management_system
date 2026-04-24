@@ -1,7 +1,7 @@
 // js/api.js — central API client + auth helpers
 
 const API = (() => {
-  const BASE = window.API_BASE = "https://campus-events-management-system.onrender.com";
+  const BASE = window.API_BASE || 'https://campus-events-management-system.onrender.com';
 
   // ── TOKEN ────────────────────────────────────────────────────────────────
   const getToken  = ()    => localStorage.getItem('ce_token');
@@ -22,10 +22,23 @@ const API = (() => {
     if (auth || getToken()) headers['Authorization'] = `Bearer ${getToken()}`;
     const opts = { method, headers };
     if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(`${BASE}${path}`, opts);
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw { status: res.status, message: data.detail || 'Request failed' };
-    return data;
+
+    try {
+      const res = await fetch(`${BASE}${path}`, opts);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw { status: res.status, message: data.detail || 'Request failed' };
+      return data;
+    } catch (err) {
+      // Network-level error = server unreachable
+      if (err.message === 'Failed to fetch' || err instanceof TypeError) {
+        // Try to wake up Render free tier with a /health ping
+        try {
+          await fetch(`${BASE}/health`, { method: 'GET', signal: AbortSignal.timeout(3000) });
+        } catch (_) {}
+        throw { status: 0, message: 'Cannot reach server. If this is the first request in a while, the server may be waking up (30s). Please try again.' };
+      }
+      throw err;
+    }
   }
 
   const get  = (path, auth = false) => request('GET',    path, null, auth);
@@ -55,7 +68,7 @@ const API = (() => {
 
   // ── PROFILE ENDPOINTS ──────────────────────────────────────────────────────
   const getMyRegistrations  = ()    => get('/api/my-registrations', true);
-  const cancelRegistration  = (id)  => del(`/my-registrations/${id}`);
+  const cancelRegistration  = (id)  => del(`/api/my-registrations/${id}`);
 
   return {
     getToken, getUser, isLoggedIn, clearAuth, setAuth,

@@ -94,7 +94,12 @@ def list_events(
     events = query.order_by(models.Event.event_date.asc()).all()
 
     # Registered event ids for current user
-    registered_ids = set()   # no user tracking
+    registered_ids = set()
+    if current_user:
+        user_regs = db.query(models.Registration.event_id).filter(
+            models.Registration.user_id == current_user.id
+        ).all()
+        registered_ids = {r.event_id for r in user_regs}
 
     result = []
     for e in events:
@@ -137,7 +142,11 @@ def get_event(
 
     reg_count = db.query(models.Registration).filter(models.Registration.event_id == e.id).count()
     is_registered = False
-    is_registered = False
+    if current_user:
+        is_registered = db.query(models.Registration).filter(
+            models.Registration.event_id == event_id,
+            models.Registration.user_id  == current_user.id,
+        ).first() is not None
 
     return {
         "id":           e.id,
@@ -188,11 +197,11 @@ def register_for_event(
     if event.deadline and event.deadline < date_today():
         raise HTTPException(400, "Registration deadline has passed")
 
-    # Already registered?
+    # Already registered? — check by user_id (reliable) then fall back to PRN
     existing = db.query(models.Registration).filter(
-    models.Registration.event_id == event_id,
-    models.Registration.prn == body.prn.upper(),
-).first()
+        models.Registration.event_id == event_id,
+        models.Registration.user_id  == current_user.id,
+    ).first()
     if existing:
         raise HTTPException(409, "You are already registered for this event")
 
@@ -216,11 +225,12 @@ def register_for_event(
         if f.is_required and not body.answers.get(f.id, "").strip():
             raise HTTPException(400, f"Field '{f.field_name}' is required")
 
-    # Insert registration
+    # Insert registration — save user_id so profile page can fetch it
     reg = models.Registration(
-    event_id=event_id,
-    name=body.name.strip(),
-    prn=body.prn.strip().upper(),
+        event_id=event_id,
+        user_id=current_user.id,
+        name=body.name.strip(),
+        prn=body.prn.strip().upper(),
     )
     db.add(reg)
     db.flush()
@@ -244,7 +254,7 @@ def my_registrations(
     regs = db.query(models.Registration).options(
         joinedload(models.Registration.event),
         joinedload(models.Registration.answers).joinedload(models.RegistrationAnswer.field),
-    ).filter(models.Registration.prn == current_user.email.upper()).order_by(
+    ).filter(models.Registration.user_id == current_user.id).order_by(
         models.Registration.created_at.desc()
     ).all()
 
@@ -276,7 +286,8 @@ def cancel_registration(
     current_user: models.User = Depends(auth.get_current_user),
 ):
     reg = db.query(models.Registration).filter(
-        models.Registration.id == reg_id,
+        models.Registration.id      == reg_id,
+        models.Registration.user_id == current_user.id,   # ownership check
     ).first()
     if not reg:
         raise HTTPException(404, "Registration not found")

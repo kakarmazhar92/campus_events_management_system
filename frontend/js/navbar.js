@@ -6,7 +6,7 @@
 
   document.body.insertAdjacentHTML('afterbegin', `
   <nav class="navbar">
-    <a href="${root}index.html" class="navbar-brand">Campus<span>Events</span></a>
+    <a href="${root}index.html" class="navbar-brand">🎓 Event<span>Wallah</span></a>
 
     <div class="navbar-actions" id="auth-links" style="display:none">
       <a href="${root}pages/login.html"    class="nav-link">Sign In</a>

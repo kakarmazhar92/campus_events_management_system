@@ -2,35 +2,27 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from dotenv import load_dotenv
 from urllib.parse import quote_plus
+from dotenv import load_dotenv
 
 load_dotenv()
 
-# DB_HOST = os.getenv("DB_HOST", "localhost")
-# DB_PORT = os.getenv("DB_PORT", "3306")
-# DB_USER = os.getenv("DB_USER", "root")
-# DB_PASS = os.getenv("DB_PASSWORD", "")
-# DB_NAME = os.getenv("DB_NAME", "campus_events")
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_PORT = int(os.getenv("DB_PORT", "3306"))        # BUG FIX: was crashing if env var missing
+DB_USER = os.getenv("DB_USER", "root")
+DB_PASS = quote_plus(os.getenv("DB_PASSWORD", "")) # encode special chars in password
+DB_NAME = os.getenv("DB_NAME", "campus_events")
 
-DB_HOST = os.getenv("DB_HOST")
-DB_PORT = int(os.getenv("DB_PORT"))
-DB_USER = os.getenv("DB_USER")
-DB_PASS = quote_plus(os.getenv("DB_PASSWORD"))   # ✅ encode password
-DB_NAME = os.getenv("DB_NAME")
+DATABASE_URL = (
+    f"mysql+mysqlconnector://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+)
 
-print("DB_HOST:", DB_HOST)
-print("DB_PORT:", DB_PORT)
-
-DATABASE_URL = f"mysql+mysqlconnector://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-
-engine = create_engine(DATABASE_URL)
-
+# BUG FIX: was creating engine TWICE — first bare, then with pool config (duplicate, wasted conn)
 engine = create_engine(
     DATABASE_URL,
     pool_size=10,
     max_overflow=20,
-    pool_pre_ping=True,
+    pool_pre_ping=True,   # auto-reconnect if DB drops connection
     pool_recycle=3600,
 )
 
