@@ -7,8 +7,7 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import date as Date
 from backend import models, auth
-from backend import database
-from database import engine, get_db, Base
+from backend.database import engine, get_db, Base
 
 # ── INIT ─────────────────────────────────────────────────────────────────────
 Base.metadata.create_all(bind=engine)  # creates users table; others already exist from Streamlit
