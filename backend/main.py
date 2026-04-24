@@ -218,9 +218,10 @@ def register_for_event(
 
     # Insert registration
     reg = models.Registration(
-    event_id=event_id,
-    name=body.name.strip(),
-    prn=body.prn.strip().upper(),
+        event_id=event_id,
+        name=body.name.strip(),
+        prn=body.prn.strip().upper(),
+        user_id=current_user.id   # ✅ THIS FIXES EVERYTHING
     )
     db.add(reg)
     db.flush()
