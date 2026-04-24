@@ -20,8 +20,8 @@ cloudinary.config(
 
 # ── CONFIG ─────────────────────────────────────────
 st.set_page_config(
-    page_title="Registrations — CampusEvents",
-    page_icon="👥",
+    page_title="Create_Event — CampusEvents",
+    page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded",
 )

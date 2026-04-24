@@ -8,8 +8,8 @@ from utils.auth  import login, seed_default_admin
 from utils.db    import init_db, test_connection
 
 st.set_page_config(
-    page_title="Registrations — CampusEvents",
-    page_icon="👥",
+    page_title="Login — CampusEvents",
+    page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded",
 )

@@ -19,8 +19,8 @@ from components.forms   import render_event_field_builder, render_registration_f
 
 # ── PAGE CONFIG ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Registrations — CampusEvents",
-    page_icon="👥",
+    page_title="Manage_Events — CampusEvents",
+    page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded",
 )

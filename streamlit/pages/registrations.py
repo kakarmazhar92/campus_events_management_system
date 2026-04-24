@@ -20,7 +20,7 @@ from components.forms   import csv_download_button
 # ── PAGE CONFIG ───────────────────────────────────────────────────────────────
 st.set_page_config(
     page_title="Registrations — CampusEvents",
-    page_icon="👥",
+    page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded",
 )

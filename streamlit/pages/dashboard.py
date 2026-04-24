@@ -23,8 +23,8 @@ from utils.queries import get_registrations_with_answers
 
 # ── PAGE CONFIG ───────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Registrations — CampusEvents",
-    page_icon="👥",
+    page_title="Dashboard — CampusEvents",
+    page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded",
 )
