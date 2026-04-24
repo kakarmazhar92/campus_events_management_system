@@ -48,12 +48,16 @@ body, .stApp {
 }
 
 /* ── SIDEBAR ── */
+/* ✅ SAFE SIDEBAR STYLE */
 [data-testid="stSidebar"] {
-  background-color: var(--bg-secondary) !important;
-  border-right: 1px solid var(--border) !important;
+    background-color: #111827;
+    min-width: 250px;
 }
-[data-testid="stSidebar"] .stMarkdown,
-[data-testid="stSidebar"] label { color: var(--text-secondary) !important; }
+
+/* Keep it visible always */
+[data-testid="stSidebar"][aria-expanded="false"] {
+    min-width: 250px;
+}
 
 /* ── BUTTONS ── */
 .stButton > button {
