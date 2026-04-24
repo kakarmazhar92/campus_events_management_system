@@ -17,13 +17,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-from utils.ui import load_css
-load_css()
-
-# Sidebar
-st.sidebar.title("Admin Panel")
-st.sidebar.markdown("---")
-st.sidebar.write("Navigation")
 
 # Always redirect to login first
 st.switch_page("pages/login.py")
