@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from backend.database import get_db
 from backend import models
 
-SECRET_KEY  = os.getenv("SECRET_KEY", "campus_secret_change_in_production_2024")
+SECRET_KEY  = os.getenv("SECRET_KEY", "campus_secret_change_in_production_2026")
 ALGORITHM   = "HS256"
 ACCESS_TTL  = 60 * 24 * 7   # 7 days in minutes
 
