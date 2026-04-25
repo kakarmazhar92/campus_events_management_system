@@ -14,12 +14,13 @@
     </div>
 
     <div class="navbar-actions" id="user-menu" style="display:none">
+      <button id="themeToggle" class="btn btn-outline">🌙</button>
       <a href="${root}index.html"          class="nav-link">Events</a>
       <a href="${root}pages/profile.html"  class="nav-link">Profile</a>
       <div class="nav-avatar" id="nav-avatar" title="Profile" onclick="window.location.href='${root}pages/profile.html'"></div>
       <button class="btn btn-ghost btn-sm" data-logout>Logout</button>
     </div>
-
+    
     <button class="hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
